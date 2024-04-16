@@ -93,6 +93,8 @@ public class HelloApplication extends Application {
                 pfPassword.setText(tmpPassword.getText());
             }
         };
+        Label info = new Label("info");
+        grid.add(info, 2, 3, 2, 1);
 
         btnShow.setOnMouseReleased(release);
         btnShow.setOnMouseExited(release);
@@ -105,17 +107,52 @@ public class HelloApplication extends Application {
         btnLogin.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent actionEvent) {
-                System.out.println("Hello");
-                try {
-                    Parent p = FXMLLoader.load(getClass().getResource("homepage.fxml"));
-                    Scene s = new Scene(p);
-                    stage.setScene(s);
-                    stage.show();
-                } catch (IOException e) {
-                    e.printStackTrace();
+                String name = tfUsername.getText();
+                String pass = pfPassword.getText();
+                if(CRUD.verifyLogin(name,pass)){
+                    try {
+                        Parent p = FXMLLoader.load(getClass().getResource("homepage.fxml"));
+                        Scene s = new Scene(p);
+                        stage.setScene(s);
+                        stage.show();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    info.setText("Invalid Login !");
                 }
             }
         });
+
+        Button btnRegister = new Button("Register");
+        btnRegister.setFont(Font.font(40));
+        grid.add(btnRegister, 1, 3, 2, 1);
+
+        btnRegister.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+
+                String name = tfUsername.getText();
+                String pass = pfPassword.getText();
+                try{
+                    int added = CRUD.createUser(name,pass);
+                    info.setText("Successful Registered !"+added+" accounts");
+                } catch (Exception e){
+
+                    info.setText("Invalid Register !");
+                }
+//                try {
+//                    Parent p = FXMLLoader.load(getClass().getResource("homepage.fxml"));
+//                    Scene s = new Scene(p);
+//                    stage.setScene(s);
+//                    stage.show();
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
+            }
+        });
+
+
 
         Scene scene = new Scene(grid, 700, 500, Color.BLACK);
         stage.setScene(scene);
