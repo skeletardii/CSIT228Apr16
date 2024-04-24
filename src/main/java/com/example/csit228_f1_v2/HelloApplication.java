@@ -23,12 +23,15 @@ import javafx.stage.Stage;
 import java.io.IOException;
 
 public class HelloApplication extends Application {
+    public static Stage thestage;
     @Override
     public void start(Stage stage) throws IOException {
 //        FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("login-view.fxml"));
 //        Scene scene = new Scene(fxmlLoader.load(), 320, 240);
 //        stage.setTitle("Hello!");
 //        stage.setScene(scene);
+        thestage = stage;
+        CRUD.createTables();
 
         GridPane grid = new GridPane();
         grid.setAlignment(Pos.CENTER);
@@ -111,8 +114,15 @@ public class HelloApplication extends Application {
                 String pass = pfPassword.getText();
                 if(CRUD.verifyLogin(name,pass)){
                     try {
-                        Parent p = FXMLLoader.load(getClass().getResource("homepage.fxml"));
+                        FXMLLoader loader = new FXMLLoader(getClass().getResource("homepage.fxml"));
+                        Parent p = loader.load();
                         Scene s = new Scene(p);
+                        HomeController controller = loader.getController();
+                        controller.setPrevScene(btnLogin.getScene());
+                        controller.setCurrScene(s);
+                        tfUsername.setText("");
+                        pfPassword.setText("");
+                        controller.setvals();
                         stage.setScene(s);
                         stage.show();
                     } catch (IOException e) {
